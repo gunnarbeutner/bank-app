@@ -52,8 +52,8 @@ HTML;
 
 	if (get_user_attr(get_user_email(), 'admin')) {
 		foreach ($params['user_accounts'] as $user) {
-			if (bccomp($user['balance'], '0') == 0)
-				continue;
+//			if (bccomp($user['balance'], '0') == 0)
+//				continue;
 
 			$html = <<<HTML
   <tr>
