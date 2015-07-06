@@ -80,19 +80,23 @@ class DepositpayoutController {
 			$pop_reference = 'Bareinzahlung';
 		}
 
-		list($status, $result) = new_transaction($pop_from, $pop_to, 'Direct Debit', $amount, $pop_reference);
+		$bank_db->query("BEGIN");
+
+		list($status, $result) = new_transaction($pop_from, $pop_to, 'Direct Debit', $amount, $pop_reference, false);
 
 		if (!$status) {
 			$params = [ 'message' => "Bank -> POP - " . $result ];
 			return [ 'error', $params ];
 		}
 
-		list($status, $result) = new_transaction($from, $to, 'Direct Debit', $amount, $reference);
+		list($status, $result) = new_transaction($from, $to, 'Direct Debit', $amount, $reference, false);
 
 		if (!$status) {
 			$params = [ 'message' => "Bank -> Kunde - " . $result ];
 			return [ 'error', $params ];
 		}
+
+		$bank_db->query("COMMIT");
 
 		$params = [
 			'txid' => $result,
