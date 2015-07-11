@@ -20,6 +20,8 @@
  */
 
 require_once('helpers/db.php');
+require_once('helpers/mail.php');
+require_once('helpers/preauth.php');
 
 function get_user_balance($uid) {
 	global $bank_db;
@@ -67,9 +69,13 @@ QUERY;
 	$row_from = $bank_db->query($query)->fetch();
 
 	$balance_from = bcsub($row_from['balance'], $amount);
+
+	$held_amount = get_held_amount(get_user_attr($from_mail, 'id'));
+	$balance_from_held = bcsub($balance_from, $held_amount);
+
 	$credit_limit_from = get_user_attr($from_mail, 'credit_limit');
 
-	if (bccomp($balance_from, bcmul($credit_limit_from, -1)) == -1) {
+	if (bccomp($balance_from_held, bcmul($credit_limit_from, -1)) == -1) {
 		if ($use_tx)
 			$bank_db->query("ROLLBACK");
 		return [ false, 'Unzureichende Kontodeckung.' ];
@@ -118,7 +124,10 @@ QUERY;
 
 	$amount_formatted = format_number($amount, false);
 
-	$message = <<<MESSAGE
+	if (get_user_attr($from_mail, 'verified')) {
+		$subject = "Abbuchung von Ihrem Konto an ${to_mail}: ${reference}";
+
+		$message = <<<MESSAGE
 Von Ihrem Konto fand eine Abbuchung statt:
 
 Empfänger: $to_mail
@@ -126,14 +135,13 @@ Betrag (€): ${amount_formatted}
 Verwendungszweck: $reference
 MESSAGE;
 
-	$headers = [];
-	$headers[] = "From: " . BANK_BRAND . " <no-reply@" . BANK_DOMAIN . ">";
-	$headers[] = "MIME-Version: 1.0";
-	$headers[] = "Content-type: text/plain; charset=utf-8";
+		app_mail($from_mail, $subject, $message);
+	}
 
-	mail($from_mail, "Abbuchung von Ihrem Konto an " . $to_mail . ": " . $reference, $message, implode("\r\n", $headers));
+	if (get_user_attr($to_mail, 'verified')) {
+		$subject = "Gutschrift auf Ihr Konto von ${from_mail}: ${reference}";
 
-	$message = <<<MESSAGE
+		$message = <<<MESSAGE
 Für Ihr Konto fand eine Gutschrift statt:
 
 Auftraggeber: $from_mail
@@ -141,12 +149,8 @@ Betrag (€): ${amount_formatted}
 Verwendungszweck: $reference
 MESSAGE;
 
-	$headers = [];
-	$headers[] = "From: " . BANK_BRAND . " <no-reply@" . BANK_DOMAIN . ">";
-	$headers[] = "MIME-Version: 1.0";
-	$headers[] = "Content-type: text/plain; charset=utf-8";
-
-	mail($to_mail, "Gutschrift auf Ihr Konto von " . $from_mail . ": " . $reference, $message, implode("\r\n", $headers));
+		app_mail($to_mail, $subject, $message);
+	}
 
 	return [ true, $txid ];
 }

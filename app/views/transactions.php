@@ -38,7 +38,19 @@ require_once('helpers/transaction.php');
     <th>Dispolimit:</th>
     <td><?php echo format_number(get_user_attr(get_user_email(), 'credit_limit'), false); ?> &euro;</td>
   </tr>
+  <tr>
+    <th>Angefragte Ums&auml;tze:
+      <span class="tooltip" title="Angefragte Ums&auml;tze sind noch nicht gebuchte Ums&auml;tze, z.B. f&uuml;r Bestellungen, die noch nicht ausgef&uuml;hrt wurden.">
+        <span class="aui-icon aui-icon-small aui-iconfont-help tooltip">
+      </span>
+    </th>
+    <td><?php echo format_number($params['held_amount']); ?>
+  </tr>
 </table>
+
+<script type="text/javascript">
+  AJS.$(".tooltip").tooltip();
+</script>
 
 <h1>Umsatz&uuml;bersicht</h1>
 

@@ -2,7 +2,7 @@
 
 ini_set('include_path', ini_get('include_path') . ':' . __DIR__ . ':' . __DIR__  . '/app');
 
-define('BANK_DB_DSN', 'mysql:dbname=bank');
+define('BANK_DB_DSN', 'mysql:dbname=bank;charset=utf8');
 define('BANK_DB_USERNAME', 'bank');
 define('BANK_DB_PASSWORD', 'xxxx');
 

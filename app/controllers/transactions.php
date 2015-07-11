@@ -21,6 +21,7 @@
 
 require_once('helpers/transaction.php');
 require_once('helpers/session.php');
+require_once('helpers/preauth.php');
 
 class TransactionsController {
 	public function get() {
@@ -29,7 +30,8 @@ class TransactionsController {
 		$tx = get_transactions(get_user_id());
 		$vp = [
 			'balance' => get_user_balance(get_user_id()),
-			'tx' => $tx
+			'tx' => $tx,
+			'held_amount' => get_held_amount(get_user_id())
 		];
 		return [ 'transactions', $vp ];
 	}

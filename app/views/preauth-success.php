@@ -19,18 +19,10 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-http_response_code(400);
-
 ?>
 
-<h1>Fehler</h1>
+<h1>Pre-Authorization</h1>
 
-<p>Es ist ein Fehler aufgetreten: <?php echo htmlentities($params['message']); ?></p>
+<p>Die Aktion wurde erfolgreich ausgef&uuml;hrt:</p>
 
-<p>
-<?php if (!isset($params['back']) || $params['back']) { ?>
-<a href="javascript:history.back();">Zur&uuml;ck</a>
-<?php } else { ?>
-<a href="/app/transactions">Zur Konto&uuml;bersicht</a>
-<?php } ?>
-</p>
+<p><a href="/app/transactions">Zur Konto&uuml;bersicht</a></p>

@@ -43,7 +43,7 @@ class DirectdebitController {
 		}
 
 		$last_txid = $_POST['last_txid'];
-		if ($last_txid != get_last_inbound_txid(get_user_id())) {
+		if ($last_txid != '' && $last_txid != get_last_inbound_txid(get_user_id())) {
 			$params = [
 				'message' => "In der Zwischenzeit wurde in einem anderen Fenster eine andere Transaktion ausgeführt.",
 				'back' => false

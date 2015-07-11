@@ -19,18 +19,39 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-http_response_code(400);
+require_once('helpers/db.php');
 
-?>
+function get_held_amount($user_id) {
+	global $bank_db;
 
-<h1>Fehler</h1>
+	$user_quoted = $bank_db->quote($user_id);
 
-<p>Es ist ein Fehler aufgetreten: <?php echo htmlentities($params['message']); ?></p>
+	$query = <<<QUERY
+SELECT SUM(`amount`) AS amount
+FROM `holds`
+WHERE `user_id` = ${user_quoted}
+QUERY;
+	$row = $bank_db->query($query)->fetch();
+	if ($row === false) {
+		return 0;
+	} else {
+		return $row['amount'];
+	}
+}
 
-<p>
-<?php if (!isset($params['back']) || $params['back']) { ?>
-<a href="javascript:history.back();">Zur&uuml;ck</a>
-<?php } else { ?>
-<a href="/app/transactions">Zur Konto&uuml;bersicht</a>
-<?php } ?>
-</p>
+function set_held_amount($user_id, $tagname, $amount) {
+	global $bank_db;
+
+	$user_quoted = $bank_db->quote($user_id);
+	$tagname_quoted = $bank_db->quote($tagname);
+	$amount_quoted = $bank_db->quote($amount);
+
+	$query = <<<QUERY
+INSERT INTO `holds`
+(`user_id`, `name`, `amount`)
+VALUES
+(${user_quoted}, ${tagname_quoted}, ${amount_quoted})
+ON DUPLICATE KEY UPDATE `amount`=VALUES(`amount`)
+QUERY;
+	$bank_db->query($query);
+}

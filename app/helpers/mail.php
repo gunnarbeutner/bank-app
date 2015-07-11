@@ -19,18 +19,12 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-http_response_code(400);
+function app_mail($to, $subject, $message) {
+	$headers = [];
+	$headers[] = "From: " . BANK_BRAND . " <no-reply@" . BANK_DOMAIN . ">";
+	$headers[] = "MIME-Version: 1.0";
+	$headers[] = "Content-type: text/plain; charset=utf-8";
 
-?>
+	mail($to, $subject, $message, implode("\r\n", $headers));
+}
 
-<h1>Fehler</h1>
-
-<p>Es ist ein Fehler aufgetreten: <?php echo htmlentities($params['message']); ?></p>
-
-<p>
-<?php if (!isset($params['back']) || $params['back']) { ?>
-<a href="javascript:history.back();">Zur&uuml;ck</a>
-<?php } else { ?>
-<a href="/app/transactions">Zur Konto&uuml;bersicht</a>
-<?php } ?>
-</p>

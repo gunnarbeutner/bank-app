@@ -41,6 +41,8 @@ class DepositpayoutController {
 	}
 
 	public function post() {
+		global $bank_db;
+
 		verify_user();
 
 		if (!get_user_attr(get_user_email(), 'admin')) {

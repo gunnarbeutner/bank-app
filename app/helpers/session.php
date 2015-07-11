@@ -20,6 +20,7 @@
  */
 
 require_once('helpers/db.php');
+require_once('helpers/mail.php');
 
 session_start();
 
@@ -131,7 +132,6 @@ function find_addresses($q) {
 SELECT `email`, `name`
 FROM `users`
 WHERE `email` LIKE '%@%' AND (`email` LIKE CONCAT('%', ${q_quoted}, '%') OR `name` LIKE CONCAT('%', ${q_quoted}, '%'))
-AND `password`!=''
 QUERY;
 
 	$addresses = [];
@@ -176,6 +176,8 @@ QUERY;
 	if ($row === false)
 		return;
 
+	set_user_attr($email, 'verified', 1);
+
 	$_SESSION['email'] = $email;
 	$_SESSION['uid'] = $row['id'];
 	$_SESSION['name'] = $row['name'];
@@ -186,15 +188,18 @@ function create_new_account($email, $name, $phone) {
 
 	$email_quoted = $bank_db->quote($email);
 	$name_quoted = $bank_db->quote($name);
-	$phone_quoted = $bank_db->quote($phone);
 
 	$query = <<<QUERY
 INSERT INTO `users`
-(`email`, `name`, `phone`)
+(`email`, `name`)
 VALUES
-(${email_quoted}, ${name_quoted}, ${phone_quoted})
+(${email_quoted}, ${name_quoted})
 QUERY;
 	$bank_db->query($query);
+
+	if (!get_user_attr($email, 'verified')) {
+		set_user_attr($email, 'phone', $phone);
+	}
 }
 
 function send_password_reminder($email) {
@@ -220,12 +225,7 @@ MESSAGE;
 			$subject = "Passwort zurücksetzen";
 		}
 
-		$headers = [];
-		$headers[] = "From: " . BANK_BRAND . " <no-reply@" . BANK_DOMAIN . ">";
-		$headers[] = "MIME-Version: 1.0";
-		$headers[] = "Content-type: text/plain; charset=utf-8";
-
-		mail($email, $subject, $message, implode("\r\n", $headers));
+		app_mail($email, $subject, $message);
 	}
 }
 
@@ -250,4 +250,23 @@ function get_email_from_transfer_code($text) {
 	}
 
 	return false;
+}
+
+if (isset($headers['HTTP_AUTHORIZATION'])) {
+	$credentials = base64_decode( substr($_SERVER['HTTP_AUTHORIZATION'],6) );
+	list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', $credentials);
+}
+
+if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
+	$email = $_SERVER['PHP_AUTH_USER'];
+	$password = $_SERVER['PHP_AUTH_PW'];
+	$upassword = get_user_attr($email, 'password');
+
+	if (!password_verify($password, $upassword)) {
+		header('WWW-Authenticate: Basic realm="' . BANK_BRAND . '"');
+		header('HTTP/1.0 401 Unauthorized');
+		die();
+	}
+
+	set_user_session($email);
 }

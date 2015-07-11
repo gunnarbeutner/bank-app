@@ -29,6 +29,10 @@ $app_url = 'https://' . BANK_DOMAIN;
 <head>
   <title><?php echo BANK_BRAND; ?></title>
 <?php if ($format == 'html') { ?>
+  <script src="/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
+  <script src="/vendor/atlassian/aui/aui/js/aui.min.js" type="text/javascript"></script>
+  <script src="/vendor/atlassian/aui/aui/js/aui-experimental.min.js" type="text/javascript"></script>
+  <script src="/vendor/atlassian/aui/aui/js/aui-soy.min.js" type="text/javascript"></script>
   <link rel="stylesheet" href="<?php echo $app_url; ?>/vendor/components/font-awesome/css/font-awesome.min.css"></link>
   <link rel="stylesheet" href="<?php echo $app_url; ?>/vendor/atlassian/aui/aui/css/aui.min.css" media="all"></link>
   <link rel="stylesheet" href="<?php echo $app_url; ?>/vendor/atlassian/aui/aui/css/aui-experimental.min.css" media="all"></link>
@@ -58,13 +62,9 @@ $app_url = 'https://' . BANK_DOMAIN;
     </div>
   </div>
 
-  <script src="/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
   <script src="/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js" type="text/javascript"></script>
   <script src="/vendor/components/handlebars.js/handlebars.min.js" type="text/javascript"></script>
   <script src="/js/md5.min.js" type="text/javascript"></script>
   <script src="/js/application.js" type="text/javascript"></script>
-  <script src="/vendor/atlassian/aui/aui/js/aui.min.js" type="text/javascript"></script>
-  <script src="/vendor/atlassian/aui/aui/js/aui-experimental.min.js" type="text/javascript"></script>
-  <script src="/vendor/atlassian/aui/aui/js/aui-soy.min.js" type="text/javascript"></script>
 </body>
 </html>

@@ -20,9 +20,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-chdir('/var/www');
-
-require_once('config.php');
+require_once(__DIR__ . '/../config.php');
 require_once('helpers/session.php');
 require_once('helpers/db.php');
 require_once('helpers/transaction.php');
