@@ -9,6 +9,8 @@ Features:
  * Direct debit
  * HBCI integration (lets users top up their accounts)
  * Deposits/pay-outs
+ * Authorization hold
+ * 2FA authentication (Yubikey only for now)
 
 ## Requirements
 
