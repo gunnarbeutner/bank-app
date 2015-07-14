@@ -22,6 +22,7 @@
 require_once('helpers/session.php');
 require_once('helpers/transaction.php');
 require_once('helpers/sms.php');
+require_once('helpers/otp.php');
 
 class TransferController {
 	public function get() {

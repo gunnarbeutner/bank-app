@@ -23,51 +23,38 @@ require_once('helpers/csrf.php');
 require_once('helpers/session.php');
 require_once('helpers/otp.php');
 
-class LoginController {
+class OtptokenController {
 	public function get() {
-		if (is_logged_in()) {
-			header('Location: /app/transactions');
-			die();
+		verify_user();
+
+		if (get_user_attr(get_user_email(), 'yubikey_identity') != '') {
+			$params = [ 'message' => 'Für den Account ist bereits ein Yubikey registriert. Bitte lassen Sie diesen zunächst durch einen Administrator entfernen.' ];
+			return [ 'error', $params ];
 		}
 
-		return [ 'login', null ];
+		return [ 'otp-token', null ];
 	}
 
 	public function post() {
 		verify_csrf_token();
 
-		$email = $_POST['email'];
-		$password = $_POST['password'];
-		$upassword = get_user_attr($email, 'password');
-		$otp_token = $_POST['otp-token'];
-
-		$uyubikey_identity = get_user_attr($email, 'yubikey_identity');
-		if ($uyubikey_identity != '') {
-			if ($otp_token == '') {
-				$params = [
-					'email' => $email,
-					'password' => $password
-				];
-				return [ 'otp-login', $params ];
-			}
-
-			$yubikey_identity = get_yubikey_identity($otp_token);
-
-			if ($yubikey_identity != $uyubikey_identity) {
-				$params = [ 'message' => 'Das angegebene OTP-Token ist ungültig.' ];
-				return [ 'error', $params ];
-			}
-		}
-
-		if (!password_verify($password, $upassword)) {
-			$params = [
-				'message' => 'Benutzername oder Passwort falsch.'
-			];
+		if (get_user_attr(get_user_email(), 'yubikey_identity') != '') {
+			$params = [ 'message' => 'Für den Account ist bereits ein Yubikey registriert. Bitte lassen Sie diesen zunächst durch einen Administrator entfernen.' ];
 			return [ 'error', $params ];
 		}
 
-		set_user_session($email);
-		header('Location: /app/transactions');
-		die();
+		$otp_token = $_POST['otp-token'];
+
+		$yubikey_identity = get_yubikey_identity($otp_token);
+
+		if ($yubikey_identity === false) {
+			$params = [ 'message' => 'Das angegebene OTP-Token ist nicht gültig.' ];
+			return [ 'error', $params ];
+		}
+
+		set_user_attr(get_user_email(), 'yubikey_identity', $yubikey_identity);
+
+		return [ 'otp-token-success', null ];
 	}
 }
+

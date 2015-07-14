@@ -23,13 +23,9 @@ require_once('helpers/csrf.php');
 
 ?>
 
-<h1>Kundendaten</h1>
+<h1>Yubikey registrieren</h1>
 
-<?php if ($params['force']) { ?>
-<p>Bitte setzen Sie ein neues Passwort f&uuml;r Ihr Konto.</p>
-<?php } ?>
-
-<form method="post" action="/app/profile" class="aui">
+<form method="post" action="/app/otp-token" class="aui">
   <div class="field-group">
     <label for="name">
       Name
@@ -46,47 +42,16 @@ require_once('helpers/csrf.php');
 
   <div class="field-group">
     <label for="email">
-      Mobilfunknummer
+      OTP-Token
     </label>
-    <span id="email"><?php echo htmlentities(get_user_attr(get_user_email(), 'phone')); ?></span>
+    <input type="text" class="text" maxlength="128" name="otp-token" id="otp-token"></input>
   </div>
-
-<?php if (!$params['force']) { ?>
-  <div class="field-group">
-    <label for="old-password">
-      Altes Passwort
-    </label>
-    <input type="password" class="password" maxlength="128" name="old-password" id="old-password"></input>
-  </div>
-<?php } ?>
-
-  <div class="field-group">
-    <label for="password1">
-      Passwort
-    </label>
-    <input type="password" class="password" maxlength="128" name="password1" id="password1"></input>
-  </div>
-
-  <div class="field-group">
-    <label for="password2">
-      Passwort (wdh.)
-    </label>
-    <input type="password" class="password" maxlength="128" name="password2" id="password2"></input>
-  </div>
-
-<!--  <div class="field-group">
-    <label for="direct-debit">
-    </label>
-    <input type="checkbox" class="checkbox" name="direct-debit" value="yes" id="direct-debit"<?php if ($params['direct-debit']) { ?> checked="checked"<?php } ?>>Abbuchung per Lastschrift erlauben</input>
-  </div> -->
 
   <div class="buttons-container">
     <div class="buttons">
       <input type="hidden" name="direct-debit" value="yes"></input>
       <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>"></input>
-      <input class="button submit" type="submit" value="Speichern"></input>
+      <input class="button submit" type="submit" value="Registrieren"></input>
     </div>
   </div>
 </form>
-
-<p><a href="/app/otp-token">Yubikey registrieren</a></p>
