@@ -2,28 +2,33 @@
 
 ini_set('include_path', ini_get('include_path') . ':' . __DIR__ . ':' . __DIR__  . '/app');
 
-define('BANK_DB_DSN', 'mysql:dbname=bank;charset=utf8');
-define('BANK_DB_USERNAME', 'bank');
-define('BANK_DB_PASSWORD', 'xxxx');
+const BANK_DB_DSN = 'mysql:dbname=bank;charset=utf8';
+const BANK_DB_USERNAME = 'bank';
+const BANK_DB_PASSWORD = 'xxxx';
 
-define('BANK_BRAND', 'My Bank');
-define('BANK_LOGO', 'my-logo.png');
-define('BANK_DOMAIN', 'banking.example.org');
+const BANK_BRAND = 'My Bank';
+const BANK_LOGO = 'my-logo.png';
+const BANK_DOMAIN = 'banking.example.org';
 
-define('BANK_MGMT_ACCOUNT', 'net-bank');
-define('BANK_POPS', array(
+const BANK_MGMT_ACCOUNT = 'net-bank';
+const BANK_POPS = [
 	'net-kasse' => 'NET Kasse'
-));
+];
 
-define('BANK_EXT_ACCOUNT', 'xxxx');
-define('BANK_EXT_OWNER', 'xxxx');
-define('BANK_EXT_IBAN', 'xxxx');
-define('BANK_EXT_BIC', 'xxxx');
-define('BANK_EXT_ORG', 'xxxx');
+const BANK_EXT_ACCOUNT = 'xxxx';
+const BANK_EXT_OWNER = 'xxxx';
+const BANK_EXT_IBAN = 'xxxx';
+const BANK_EXT_BIC = 'xxxx';
+const BANK_EXT_ORG = 'xxxx';
 
-define('BANK_MAIL_FILTERS', array('*'));
+const BANK_MAIL_FILTERS = [
+	'*'
+];
 
-define('BANK_MAC_SECRET', 'xxxx');
-define('BANK_SMS_URL', 'https://sms-gateway/?password=xxxx');
+const BANK_SMS_URL = 'https://sms-gateway/?password=xxxx';
 
-define('BANK_MAC_SECRET', 'xxxx');
+const BANK_MAC_SECRET = 'xxxx';
+
+const BANK_YUBIKEY_CLIENTID = '12345';
+const BANK_YUBIKEY_APIKEY = 'xxxx';
+
