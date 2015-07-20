@@ -48,8 +48,8 @@
   </tr>
 </table>
 
-<p>Die Gutschrift erfolgt automatisch sobald die &Uuml;berweisung seitens der Bank best&auml;tigt wurde. Alternativ k&ouml;nnen Einzahlungen auch in bar bei Marius oder Gunnar get&auml;tigt werden.</p>
+<p>Die Gutschrift erfolgt automatisch sobald die &Uuml;berweisung seitens der Bank best&auml;tigt wurde. Alternativ k&ouml;nnen Einzahlungen auch in bar bei Cornelius oder Gunnar get&auml;tigt werden.</p>
 
 <h1>Auszahlung</h1>
 
-<p>Auszahlungen werden momentan manuell ausgef&uuml;hrt. Hierf&uuml;r kann eine E-Mail an Marius oder Gunnar geschickt werden.</p>
+<p>Auszahlungen werden momentan manuell ausgef&uuml;hrt. Hierf&uuml;r kann eine E-Mail an Cornelius oder Gunnar geschickt werden.</p>
