@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.24, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.25, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: bank
 -- ------------------------------------------------------
--- Server version	5.6.24-0ubuntu2
+-- Server version	5.6.25-0ubuntu0.15.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,6 +31,21 @@ CREATE TABLE `external_transfers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `holds`
+--
+
+DROP TABLE IF EXISTS `holds`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `holds` (
+  `user_id` int(11) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `amount` decimal(12,5) NOT NULL,
+  UNIQUE KEY `pk` (`user_id`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `transactions`
 --
 
@@ -50,7 +65,7 @@ CREATE TABLE `transactions` (
   KEY `fk_to_user_id_idx` (`to`),
   CONSTRAINT `fk_from_user_id` FOREIGN KEY (`from`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_to_user_id` FOREIGN KEY (`to`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=414 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,18 +79,20 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
   `email` varchar(128) NOT NULL,
-  `phone` varchar(64) NOT NULL,
+  `phone` varchar(64) DEFAULT NULL,
+  `yubikey_identity` varchar(64) DEFAULT NULL,
   `allow_direct_debit` int(11) NOT NULL DEFAULT '1',
   `password` varchar(255) NOT NULL,
   `reset_token` varchar(64) DEFAULT NULL,
   `reset_timestamp` timestamp NULL DEFAULT NULL,
-  `balance` decimal(12,5) NOT NULL,
+  `balance` decimal(12,5) NOT NULL DEFAULT '0.00000',
   `credit_limit` decimal(12,5) DEFAULT '10.00000',
   `direct_debit` int(11) NOT NULL DEFAULT '0',
   `admin` int(11) NOT NULL DEFAULT '0',
+  `verified` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -87,4 +104,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-04  9:48:41
+-- Dump completed on 2015-07-30  6:56:43
