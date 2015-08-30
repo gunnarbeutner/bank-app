@@ -31,6 +31,11 @@ class UserinfoController {
 		$email = $_GET['email'];
 		$params = [
 			'balance' => get_user_attr($email, 'balance'),
+			'tgt_reference' => get_user_transfer_code($email),
+			'tgt_owner' => BANK_EXT_OWNER,
+			'tgt_iban' => BANK_EXT_IBAN,
+			'tgt_bic' => BANK_EXT_BIC,
+			'tgt_org' => BANK_EXT_ORG
 		];
 		return [ 'user-info', $params ];
 	}
