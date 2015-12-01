@@ -30,6 +30,42 @@ class LoginController {
 			die();
 		}
 
+		$auth_ok = null;
+		
+		if (isset($_COOKIE['BANKUSER']) && $_COOKIE['BANKUSER'] != '' && isset($_COOKIE['BANKTOKEN']) && $_COOKIE['BANKTOKEN'] != '') {
+			$email = $_COOKIE['BANKUSER'];
+			$utoken = $_COOKIE['BANKTOKEN'];
+			$token = get_user_attr($email, 'login_token');
+			if ($token != '' && $token == $utoken) {
+				$auth_ok = true;
+			}
+		}
+		
+		if (isset($_GET['account']) && isset($_GET['token'])) {
+			$email = $_GET['account'];
+			$utoken = $_GET['token'];
+
+			$token = get_user_attr($email, 'login_token');
+
+			if ($token != '' && $token == $utoken) {
+				$auth_ok = true;
+			}
+
+			$atoken = hash_hmac('sha256', ((int)time() - (int)time() % 86400) . $email, BANK_MAC_SECRET);
+			if ($atoken == $utoken) {
+				$auth_ok = true;
+			}
+		}
+		
+		if ($auth_ok) {
+			set_user_session($email);
+			header('Location: /app/transactions');
+			die();
+		} else if ($auth_ok === false) {
+			$params = [ 'message' => 'Das angegebene Token ist ungültig.' ];
+			return [ 'error', $params ];
+		}
+
 		return [ 'login', null ];
 	}
 

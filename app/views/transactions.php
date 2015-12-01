@@ -21,6 +21,25 @@
 
 require_once('helpers/transaction.php');
 
+if ($format == 'json') {
+	ob_clean();
+
+	$info = [
+		'balance' => $params['balance'],
+		'held_amount' => $params['held_amount'],
+		'tx' => []
+	];
+
+	while ($tx = $params['tx']->fetch(PDO::FETCH_ASSOC)) {
+		$info['tx'][$tx['id']] = $tx;
+	}
+
+	header('Content-type: application/json');
+	echo json_encode($info);
+	ob_end_flush();
+	exit(0);
+}
+
 ?>
 
 <h1>Konto</h1>
@@ -54,7 +73,7 @@ require_once('helpers/transaction.php');
 
 <h1>Umsatz&uuml;bersicht</h1>
 
-<p>Es werden die Buchungen der letzten <b>90 Tage</b> angezeigt.</p>
+<p>Es werden die Buchungen der letzten <b>180 Tage</b> angezeigt.</p>
 
 <table class="aui zebra" id="transactions">
   <tr>
