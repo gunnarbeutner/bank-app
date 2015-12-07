@@ -34,10 +34,10 @@
     <th>IBAN:</th>
     <td><?php echo BANK_EXT_IBAN; ?></td>
   </tr>
-<!--  <tr>
+  <tr>
     <th>BIC:</th>
     <td><?php echo BANK_EXT_BIC; ?></td>
-  </tr>-->
+  </tr>
   <tr>
     <th>Kreditinstitut:</th>
     <td><?php echo BANK_EXT_ORG; ?></td>
