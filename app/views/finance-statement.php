@@ -34,7 +34,7 @@ require_once('helpers/transaction.php');
 <table class="aui" id="system-accounts">
   <tr>
     <th>Name</th>
-    <th>Kontostand</th>
+    <th>Kontostand (&euro;)</th>
  </tr>
 <?php
 	foreach ($params['system_accounts'] as $user) {
@@ -49,11 +49,35 @@ HTML;
 		printf($html,
 		    htmlentities($user['email']), htmlentities($user['name']), format_number($user['balance']));
 	}
+?>
+  <tr>
+    <td>Alle Kundenaccounts</td>
+    <td><?php echo format_number($params['user_balance']); ?></td>
+ </tr>
+  <tr>
+    <td><ul><li>davon Guthaben</li></ul></td>
+    <td><?php echo format_number($params['user_balance_positive']); ?></td>
+ </tr>
+  <tr>
+    <td><ul><li>davon Schulden</li></ul></td>
+    <td><?php echo format_number($params['user_balance_negative']); ?></td>
+ </tr>
+</table>
 
+<?php
 	if (get_user_attr(get_user_email(), 'admin')) {
+?>
+<h2>Kundenaccounts</h2>
+
+<table class="aui" id="system-accounts">
+  <tr>
+    <th>Name</th>
+    <th>Kontostand (&euro;)</th>
+ </tr>
+<?php
 		foreach ($params['user_accounts'] as $user) {
-//			if (bccomp($user['balance'], '0') == 0)
-//				continue;
+			if (bccomp($user['balance'], '0') == 0)
+				continue;
 
 			$html = <<<HTML
   <tr>
@@ -66,23 +90,19 @@ HTML;
 			printf($html,
 			    htmlentities($user['email']), htmlentities($user['name']), format_number($user['balance']));
 		}
-	} else {
-?>
-  <tr>
-    <td>Alle Kundenaccounts</td>
-    <td><?php echo format_number($params['user_balance']); ?></td>
- </tr>
-<?php
-	}
+    }
 ?>
 </table>
 
+<?php
+	if (get_user_attr(get_user_email(), 'admin')) {
+?>
 <h2>Transaktionen</h2>
 
 <p>Heutiges Transaktionsvolumen: <?php echo format_number($params['transaction_volume']); ?> &euro;
 
 <?php
-	if (get_user_attr(get_user_email(), 'admin') && count($params['transactions']) > 0) {
+    	if (count($params['transactions']) > 0) {
 ?>
 <table class="aui" id="transactions">
   <tr>
@@ -95,8 +115,8 @@ HTML;
     <th>Verwendungszweck</th>
   </tr>
 <?php
-		foreach ($params['transactions'] as $transaction) {
-			$html = <<<HTML
+    		foreach ($params['transactions'] as $transaction) {
+	    		$html = <<<HTML
   <tr>
     <td>%s</td>
     <td>%s</td>
@@ -109,13 +129,14 @@ HTML;
 
 HTML;
 
-			printf($html,
-			    htmlentities($transaction['id']), date('H:i:s', $transaction['timestamp']), htmlentities($transaction['type']),
-			    htmlentities($transaction['from_email']), htmlentities($transaction['to_email']),
-			    format_number($transaction['amount']), htmlentities($transaction['reference']));
-		}
+    			printf($html,
+	    		    htmlentities($transaction['id']), date('H:i:s', $transaction['timestamp']), htmlentities($transaction['type']),
+		    	    htmlentities($transaction['from_email']), htmlentities($transaction['to_email']),
+			        format_number($transaction['amount']), htmlentities($transaction['reference']));
+    		}
 ?>
 </table>
 <?php
+        }
 	}
 ?>

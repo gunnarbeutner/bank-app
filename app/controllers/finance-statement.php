@@ -29,7 +29,8 @@ class FinancestatementController {
 
 		$system_accounts = [];
 		$user_accounts = [];
-		$user_balance = '0';
+		$user_balance_positive = '0';
+		$user_balance_negative = '0';
 
 		$users = get_account_balances();
 
@@ -38,9 +39,26 @@ class FinancestatementController {
 				$system_accounts[] = $user;
 			else {
 				$user_accounts[] = $user;
-				$user_balance = bcadd($user_balance, $user['balance']);
+                if (bccomp($user['balance'], '0') > 0) {
+    				$user_balance_positive = bcadd($user_balance_positive, $user['balance']);
+                } else {
+                    $user_balance_negative = bcadd($user_balance_negative, $user['balance']);
+                }
 			}
 		}
+
+        function comp_user($a, $b) {
+            if (bccomp($a['balance'], '0') < 0 && bccomp($b['balance'], '0') >= 0) {
+                return 1;
+            } else if (bccomp($a['balance'], '0') >= 0 && bccomp($b['balance'], '0') < 0) {
+                return -1;
+            } else {
+                return strcmp($a['name'], $b['name']);
+            }
+        }
+
+        usort($system_accounts, 'comp_user');
+        usort($user_accounts, 'comp_user');
 
 		$transactions = get_transactions_between(mktime('0'), time());
 
@@ -56,7 +74,9 @@ class FinancestatementController {
 		$params = [
 			'system_accounts' => $system_accounts,
 			'user_accounts' => $user_accounts,
-			'user_balance' => $user_balance,
+			'user_balance_positive' => $user_balance_positive,
+			'user_balance_negative' => $user_balance_negative,
+            'user_balance' => bcadd($user_balance_positive, $user_balance_negative),
 			'transaction_volume' => $transaction_volume,
 			'transactions' => $transactions
 		];
