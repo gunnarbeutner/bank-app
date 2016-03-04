@@ -52,6 +52,8 @@ class RegisterController {
 			return [ 'error', $params ];
 		}
 
+		$phone = str_replace(' ', '', $phone);
+
 		$found = false;
 		foreach (BANK_MAIL_FILTERS as $mail_filter) {
 			if (fnmatch($mail_filter, $email)) {
