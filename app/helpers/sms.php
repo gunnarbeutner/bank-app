@@ -22,14 +22,7 @@
 function send_text_message($to, $text) {
 	$to = str_replace('+49', '0', $to);
 
-	$url = BANK_SMS_URL;
-	$url .= '&recipientAddressList=' . urlencode($to);
-	$url .= '&messageContent=' . urlencode(html_entity_decode($text));
-
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_exec($ch);
+	system(__DIR__ . "/../../scripts/sendsms.pl -H " . escapeshellarg(BANK_SMS_HOSTNAME) . ' -u ' . escapeshellarg(BANK_SMS_USERNAME) . ' -p ' . escapeshellarg(BANK_SMS_PASSWORD) . ' -n ' . escapeshellarg($to) . ' -m ' . escapeshellarg($text));
 }
 
 function send_tan($description) {
