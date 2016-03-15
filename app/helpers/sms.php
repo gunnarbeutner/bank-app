@@ -22,7 +22,7 @@
 function send_text_message($to, $text) {
 	$to = str_replace('+49', '0', $to);
 
-	system(__DIR__ . "/../../scripts/sendsms.pl -H " . escapeshellarg(BANK_SMS_HOSTNAME) . ' -u ' . escapeshellarg(BANK_SMS_USERNAME) . ' -p ' . escapeshellarg(BANK_SMS_PASSWORD) . ' -n ' . escapeshellarg($to) . ' -m ' . escapeshellarg($text));
+	system(__DIR__ . "/../../scripts/sendsms.pl -H " . escapeshellarg(BANK_SMS_HOSTNAME) . ' -u ' . escapeshellarg(BANK_SMS_USERNAME) . ' -p ' . escapeshellarg(BANK_SMS_PASSWORD) . ' -n ' . escapeshellarg($to) . ' -m ' . escapeshellarg($text) . ' >/dev/null 2>&1');
 }
 
 function send_tan($description) {
