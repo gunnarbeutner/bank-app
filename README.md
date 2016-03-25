@@ -2,7 +2,7 @@
 
 A small self-service online banking app for lunch orders in the office.
 
-Features:
+## Features:
 
  * Account overview
  * Transfers with smsTAN
@@ -11,6 +11,10 @@ Features:
  * Deposits/pay-outs
  * Authorization hold
  * 2FA authentication (Yubikey only for now)
+
+## Screenshots
+
+![Bank Screenshot](doc/bank-app.png)
 
 ## Requirements
 
