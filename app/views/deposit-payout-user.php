@@ -48,8 +48,29 @@
   </tr>
 </table>
 
-<p>Die Gutschrift erfolgt automatisch sobald die &Uuml;berweisung seitens der Bank best&auml;tigt wurde. Alternativ k&ouml;nnen Einzahlungen auch in bar bei Ufuk oder Gunnar get&auml;tigt werden.</p>
+<p>Die Gutschrift erfolgt automatisch sobald die &Uuml;berweisung seitens der Bank best&auml;tigt wurde.</p>
 
 <h1>Auszahlung</h1>
 
-<p>Auszahlungen werden momentan manuell ausgef&uuml;hrt. Hierf&uuml;r kann eine E-Mail an Ufuk oder Gunnar geschickt werden.</p>
+<form class="aui" method="post" action="/app/payout">
+  <div class="field-group">
+    <label for="owner">Kontoinhaber</label>
+    <input class="text article" type="text" name="owner" id="owner" value="<?php echo htmlentities(get_user_name()); ?>">
+  </div>
+  <div class="field-group">
+    <label for="owner">IBAN</label>
+    <input class="text article" type="text" name="iban" id="iban">
+  </div>
+  <div class="field-group">
+    <label for="amount">Betrag (&euro;)</label>
+    <input class="text small-field" type="text" name="amount" id="amount" value="<?php echo format_number(get_user_attr(get_user_email(), 'balance'), false); ?>">
+  </div>
+  <div class="buttons-container">
+    <div class="buttons">
+      <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+      <button type="submit" class="aui-button">
+      <i class="fa fa-check"></i> Auszahlen
+      </button>
+    </div>
+  </div>
+</form>
