@@ -21,7 +21,6 @@ const BANK_POPS = [
 const BANK_EXT_ACCOUNT = 'net-kasse-postbank';
 const BANK_EXT_OWNER = 'xxxx';
 const BANK_EXT_IBAN = 'DExxxx';
-const BANK_EXT_BIC = 'PBNKDEFF';
 const BANK_EXT_ORG = 'Postbank Nürnberg';
 
 const BANK_MAIL_FILTERS = [
