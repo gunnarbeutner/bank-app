@@ -57,6 +57,11 @@ class TransferController {
 		$umac = $_REQUEST['mac'];
 		$tan = $_REQUEST['tan'];
 
+        if (bccomp($amount, 0) != 1) {
+            $params = [ 'message' => 'Der Betrag muss positiv sein.' ];
+            return [ 'error', $params ];
+        }
+
 		if (get_user_attr(get_user_email(), 'phone') != '' && $tan != '973842') {
 			if ($umac == '')
 				$tan = send_tan('Ihre Ueberweisung von ' . format_number($amount, false) . ' Euro an ' . $to);
