@@ -13,15 +13,14 @@ const BANK_DOMAIN = 'banking.example.org';
 const BANK_MGMT_ACCOUNT = 'net-bank';
 const BANK_POPS = [
   'net-kasse' => 'NET Kasse (Bargeld)',
-  'net-kasse-postbank' => 'NET Kasse (Postbank)',
-  'marius.gebert@netways.de' => 'Marius Gebert',
-  'gunnar.beutner@netways.de' => 'Gunnar Beutner'
+  'net-kasse-postbank' => 'NET Kasse (Postbank)'
 ];
 
 const BANK_EXT_ACCOUNT = 'net-kasse-postbank';
 const BANK_EXT_OWNER = 'xxxx';
 const BANK_EXT_IBAN = 'DExxxx';
 const BANK_EXT_ORG = 'Postbank Nürnberg';
+const BANK_EXT_MANAGER = 'gunnar.beutner@netways.de';
 
 const BANK_MAIL_FILTERS = [
 	'*.*@netways.de'

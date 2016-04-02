@@ -47,7 +47,9 @@ require_once('helpers/session.php');
     </label>
     <select class="select" name="pop" id="pop" required="required">
 <?php
-	foreach (BANK_POPS as $account => $name) {
+    $pops = BANK_POPS;
+    $pops[get_user_email()] = get_user_name() . ' (Privat)';
+	foreach ($pops as $account => $name) {
 		echo '<option value="' . htmlentities($account) . '">' . htmlentities($name) . '</option>';
 	}
 ?>
