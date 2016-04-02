@@ -54,13 +54,19 @@ class DirectdebitController {
 		$amount = str_replace(',', '.', $_POST['amount']);
 		$from = $_POST['from'];
 		$reference = $_POST['reference'];
+        $ignore_limits = ($_POST['ignore_limits'] == "1");
+
+        if (!get_user_attr(get_user_email(), 'admin')) {
+            $params = [ 'message' => 'Der ignore_limits-Parameter kann nur von Administratoren verwendet werden.' ];
+            return [ 'error', $params ];
+        }
 
 		if (!get_user_attr($from, 'allow_direct_debit')) {
 			$params = [ 'message' => 'Der Benutzer hat der Durchführung von Lastschriften widersprochen.' ];
 			return [ 'error', $params ];
 		}
 
-		list($status, $result) = new_transaction($from, get_user_email(), 'Direct Debit', $amount, $reference);
+		list($status, $result) = new_transaction($from, get_user_email(), 'Direct Debit', $amount, $reference, true, $ignore_limits);
 
 		if (!$status) {
 			$params = [ 'message' => $result ];
@@ -71,7 +77,8 @@ class DirectdebitController {
 			'txid' => $result,
 			'from' => $from,
 			'amount' => $amount,
-			'reference' => $reference
+			'reference' => $reference,
+            'ignore_limits' => $ignore_limits
 		];
 		return [ 'direct-debit-success', $params ];
 	}

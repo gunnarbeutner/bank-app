@@ -74,6 +74,17 @@ function format_type($type) {
       <?php echo htmlentities($params['reference']); ?>
     </td>
   </tr>
+
+<?php if (get_user_attr(get_user_email(), 'admin')) { ?>
+  <tr>
+    <th>
+      Dispolimit ignorieren:
+    </th>
+    <td>
+      <?php echo $params['ignore_limits'] ? 'Ja' : 'Nein'; ?>
+    </td>
+  </tr>
+<?php } ?>
 </table>
 
 <p><a href="/app/transactions">Zur Konto&uuml;bersicht</a></p>

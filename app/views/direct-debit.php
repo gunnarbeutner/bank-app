@@ -53,6 +53,13 @@ require_once('helpers/session.php');
     <input type="text" class="text" maxlength="128" name="reference" id="reference" required="required"></input>
   </div>
 
+  <div class="field-group">
+    <label for="ignore_limits">
+      Dispolimit ignorieren
+    </label>
+    <input type="checkbox" class="checkbox" name="ignore_limits" id="ignore_limits" value="1"></input>
+  </div>
+
   <div class="buttons-container">
     <div class="buttons">
       <input type="hidden" name="last_txid" value="<?php echo htmlentities($params['last_txid']); ?>"></input>

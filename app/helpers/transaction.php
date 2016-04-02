@@ -36,7 +36,7 @@ QUERY;
 	return $bank_db->query($query)->fetch()['balance'];
 }
 
-function new_transaction($from_mail, $to_mail, $type, $amount, $reference, $use_tx = true) {
+function new_transaction($from_mail, $to_mail, $type, $amount, $reference, $use_tx = true, $ignore_limits = false) {
 	global $bank_db;
 
 	if (bccomp($amount, 0) != 1)
@@ -70,16 +70,18 @@ QUERY;
 
 	$balance_from = bcsub($row_from['balance'], $amount);
 
-	$held_amount = get_held_amount(get_user_attr($from_mail, 'id'));
-	$balance_from_held = bcsub($balance_from, $held_amount);
+    if (!$ignore_limits) {
+        $held_amount = get_held_amount(get_user_attr($from_mail, 'id'));
+        $balance_from_held = bcsub($balance_from, $held_amount);
 
-	$credit_limit_from = get_user_attr($from_mail, 'credit_limit');
+        $credit_limit_from = get_user_attr($from_mail, 'credit_limit');
 
-	if (bccomp($balance_from_held, bcmul($credit_limit_from, -1)) == -1) {
-		if ($use_tx)
-			$bank_db->query("ROLLBACK");
-		return [ false, 'Unzureichende Kontodeckung.' ];
-	}
+        if (bccomp($balance_from_held, bcmul($credit_limit_from, -1)) == -1) {
+            if ($use_tx)
+                $bank_db->query("ROLLBACK");
+            return [ false, 'Unzureichende Kontodeckung.' ];
+        }
+    }
 
 	$query = <<<QUERY
 SELECT `balance`
