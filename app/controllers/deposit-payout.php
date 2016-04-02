@@ -27,7 +27,7 @@ class DepositpayoutController {
 	public function get() {
 		verify_user();
 
-		if (get_user_attr(get_user_email(), 'admin')) {
+		if ($_REQUEST['uv'] != 1 && get_user_attr(get_user_email(), 'admin')) {
 			$params = [
 				'last_txid' => get_last_txid(get_user_attr(BANK_MGMT_ACCOUNT, 'id'))
 			];
