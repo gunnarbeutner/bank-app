@@ -63,7 +63,7 @@ if ($format == 'json') {
         <span class="aui-icon aui-icon-small aui-iconfont-help tooltip">
       </span>
     </th>
-    <td><?php echo format_number($params['held_amount']); ?>
+    <td><?php echo format_number($params['held_amount']); ?> &euro;</td>
   </tr>
 </table>
 
