@@ -73,9 +73,7 @@ HTML;
   <tr>
     <th>Name</th>
     <th>Kontostand (&euro;)</th>
-<?php if (get_user_attr(get_user_email(), 'admin')) { ?>
     <th>Im Minus seit</th>
-<?php } ?>
  </tr>
 <?php
 		foreach ($params['user_accounts'] as $user) {
@@ -86,15 +84,7 @@ HTML;
   <tr>
     <td title="%s">%s</td>
     <td>%s</td>
-HTML;
-
-            if (get_user_attr(get_user_email(), 'admin')) {
-                $html .= <<<HTML
     <td>%s</td>
-HTML;
-            }
-
-            $html .= <<<HTML
   </tr>
 
 HTML;
