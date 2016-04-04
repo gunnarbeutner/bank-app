@@ -20,6 +20,7 @@
  */
 
 require_once('helpers/session.php');
+require_once('helpers/transaction.php');
 
 class UserinfoController {
 	public function get() {
@@ -31,6 +32,7 @@ class UserinfoController {
 		$email = $_GET['email'];
 		$params = [
 			'balance' => get_user_attr($email, 'balance'),
+            'last_positive' => get_user_last_positive($email),
 			'tgt_reference' => get_user_transfer_code($email),
 			'tgt_owner' => BANK_EXT_OWNER,
 			'tgt_iban' => BANK_EXT_IBAN,

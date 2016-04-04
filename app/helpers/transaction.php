@@ -169,7 +169,7 @@ LEFT JOIN `users` u2 ON u2.`id`=t.`to`
 WHERE `from` = ${uid_quoted} OR `to` = ${uid_quoted}
 ORDER BY t.`id` DESC
 QUERY;
-	return $bank_db->query($query);
+	return $bank_db->query($query)->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function get_last_inbound_txid($uid) {
@@ -273,4 +273,42 @@ LEFT JOIN `users` u2 ON u2.`id`=t.`to`
 WHERE UNIX_TIMESTAMP(t.`timestamp`) > ${begin_quoted} AND UNIX_TIMESTAMP(t.`timestamp`) < ${end_quoted}
 QUERY;
 	return $bank_db->query($query)->fetchAll();
+}
+
+function _cmp_transaction($a, $b) {
+    if ($a['timestamp'] > $b['timestamp'])
+        return -1;
+    else if ($a['timestamp'] < $b['timestamp'])
+        return 1;
+    else
+        return 0;
+}
+
+function get_user_last_positive($email) {
+    $balance = get_user_attr($email, 'balance');
+
+    if (bccomp($balance, '0') != -1) {
+        return time();
+    }
+
+    $uid = get_user_attr($email, 'id');
+
+    $transactions = get_transactions($uid);
+    usort($transactions, '_cmp_transaction');
+
+    foreach ($transactions as $transaction) {
+        $amount = $transaction['amount'];
+
+        if ($transaction['to'] == $uid) {
+            $amount = bcmul('-1', $amount);
+        }
+
+        $balance = bcadd($balance, $amount);
+
+        if (bccomp($balance, '0') != -1) {
+            return $transaction['timestamp'];
+        }
+    }
+
+    return 0;
 }

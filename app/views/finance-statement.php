@@ -73,6 +73,9 @@ HTML;
   <tr>
     <th>Name</th>
     <th>Kontostand (&euro;)</th>
+<?php if (get_user_attr(get_user_email(), 'admin')) { ?>
+    <th>Im Minus seit</th>
+<?php } ?>
  </tr>
 <?php
 		foreach ($params['user_accounts'] as $user) {
@@ -83,12 +86,28 @@ HTML;
   <tr>
     <td title="%s">%s</td>
     <td>%s</td>
+HTML;
+
+            if (get_user_attr(get_user_email(), 'admin')) {
+                $html .= <<<HTML
+    <td>%s</td>
+HTML;
+            }
+
+            $html .= <<<HTML
   </tr>
 
 HTML;
 
+            if (bccomp($user['balance'], '0') == -1) {
+                $last_positive_info = strftime('%Y-%m-%d', $user['last_positive']);
+            } else {
+                $last_positive_info = '';
+            }
+
 			printf($html,
-			    htmlentities($user['email']), htmlentities($user['name']), format_number($user['balance']));
+			    htmlentities($user['email']), htmlentities($user['name']),
+                format_number($user['balance']), $last_positive_info);
 		}
     }
 ?>

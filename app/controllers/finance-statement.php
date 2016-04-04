@@ -38,6 +38,7 @@ class FinancestatementController {
 			if (strpos($user['email'], '@') === false)
 				$system_accounts[] = $user;
 			else {
+                $user['last_positive'] = get_user_last_positive($user['email']);
 				$user_accounts[] = $user;
                 if (bccomp($user['balance'], '0') > 0) {
     				$user_balance_positive = bcadd($user_balance_positive, $user['balance']);
