@@ -90,7 +90,8 @@ HTML;
 HTML;
 
             if (bccomp($user['balance'], '0') == -1) {
-                $last_positive_info = strftime('%Y-%m-%d', $user['last_positive']);
+                $days = round((time() - $user['last_positive']) / 86400);
+                $last_positive_info = $days . ' Tag' . ($days != 1 ? 'e' : '');
             } else {
                 $last_positive_info = '';
             }
