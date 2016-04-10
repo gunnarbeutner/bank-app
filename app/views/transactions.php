@@ -44,6 +44,20 @@ if ($format == 'json') {
 	exit(0);
 }
 
+$accounts = $params['accounts'];
+
+function cmp_account($a, $b) {
+    if ($a == get_user_email() && $b != get_user_email()) {
+        return -1;
+    } else if ($a != get_user_email() && $b == get_user_email()) {
+        return 1;
+    } else {
+        return strcmp($a, $b);
+    }
+}
+
+uksort($accounts, 'cmp_account');
+
 ?>
 
 <h1>Konto</h1>
@@ -66,7 +80,7 @@ if ($format == 'json') {
 
       <div id="accounts" class="aui-style-default aui-dropdown2">
         <ul class="aui-list-truncate">
-<?php foreach ($params['accounts'] as $email => $account) { ?>
+<?php foreach ($accounts as $email => $account) { ?>
           <li>
             <a href="/app/transactions?account=<?php echo htmlentities($email); ?>">
               <b><?php echo htmlentities($account['name']); ?></b><br>
