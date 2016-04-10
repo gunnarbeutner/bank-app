@@ -33,7 +33,7 @@ class TransactionsController {
             $account = get_user_email();
         }
 
-        if (!get_user_attr(get_user_email(), 'admin') && $account != get_user_email() && get_user_attr(get_user_email(), 'proxy_user_id') != get_user_id()) {
+        if (!get_user_attr(get_user_email(), 'admin') && $account != get_user_email() && get_user_attr($account, 'proxy_user_id') != get_user_id()) {
             $params = [ 'message' => 'Zugriff verweigert.' ];
             return [ 'error', $params ];
         }
