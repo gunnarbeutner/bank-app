@@ -91,6 +91,7 @@ CREATE TABLE `users` (
   `direct_debit` int(11) NOT NULL DEFAULT '0',
   `admin` int(11) NOT NULL DEFAULT '0',
   `verified` int(11) NOT NULL DEFAULT '0',
+  `proxy_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

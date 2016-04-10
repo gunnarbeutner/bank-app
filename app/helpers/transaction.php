@@ -312,3 +312,22 @@ function get_user_last_positive($email) {
 
     return 0;
 }
+
+function get_user_accounts($uid) {
+	global $bank_db;
+
+	$uid_quoted = $bank_db->quote($uid);
+	$query = <<<QUERY
+SELECT `name`, `email`
+FROM `users`
+WHERE `id` = ${uid_quoted} OR `proxy_user_id` = ${uid_quoted}
+QUERY;
+
+    $result = [];
+
+	foreach ($bank_db->query($query)->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $result[$row['email']] = [ 'name' => $row['name'] ];
+    }
+
+    return $result;
+}

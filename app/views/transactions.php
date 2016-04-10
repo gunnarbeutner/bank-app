@@ -25,12 +25,16 @@ if ($format == 'json') {
 	ob_clean();
 
 	$info = [
+        'account_id' => $params['uid'],
+        'account' => $params['account'],
+        'accounts' => $params['accounts'],
 		'balance' => $params['balance'],
 		'held_amount' => $params['held_amount'],
+        'credit_limit' => $params['credit_limit'],
 		'tx' => []
 	];
 
-	while ($tx = $params['tx']->fetch(PDO::FETCH_ASSOC)) {
+    foreach ($params['tx'] as $tx) {
 		$info['tx'][$tx['id']] = $tx;
 	}
 
@@ -44,10 +48,35 @@ if ($format == 'json') {
 
 <h1>Konto</h1>
 
+<style>
+#accounts li {
+  border-bottom: 1px solid lightgrey;
+}
+
+#accounts li:last-child {
+  border: none;
+}
+</style>
+
 <table class="aui">
   <tr>
     <th>Konto:</th>
-    <td><?php echo htmlentities(get_user_email()); ?></td>
+    <td>
+      <a href="#" aria-owns="accounts" aria-haspopup="true" class="aui-button aui-style-default aui-dropdown2-trigger"><?php echo htmlentities($params['account']); ?></a>
+
+      <div id="accounts" class="aui-style-default aui-dropdown2">
+        <ul class="aui-list-truncate">
+<?php foreach ($params['accounts'] as $email => $account) { ?>
+          <li>
+            <a href="/app/transactions?account=<?php echo htmlentities($email); ?>">
+              <b><?php echo htmlentities($account['name']); ?></b><br>
+              <?php echo htmlentities($email); ?>
+            </a>
+          </li>
+<?php } ?>
+        </ul>
+      </div>
+    </td>
   </tr>
   <tr>
     <th>Kontostand:</th>
@@ -55,7 +84,7 @@ if ($format == 'json') {
   </tr>
   <tr>
     <th>Dispolimit:</th>
-    <td><?php echo format_number(get_user_attr(get_user_email(), 'credit_limit'), false); ?> &euro;</td>
+    <td><?php echo format_number($params['credit_limit'], false); ?> &euro;</td>
   </tr>
   <tr>
     <th>Angefragte Ums&auml;tze:
@@ -91,7 +120,7 @@ if ($format == 'json') {
 		$ts = date('d.m.Y', $tx['timestamp']);
 		$amount = $tx['amount'];
 
-		if ($tx['from'] == get_user_id()) {
+		if ($tx['from'] == $params['uid']) {
 			$other_user_email = $tx['to_email'];
 			$other_user_name = $tx['to_name'];
 			$amount = bcmul($amount, '-1');

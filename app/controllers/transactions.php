@@ -27,11 +27,32 @@ class TransactionsController {
 	public function get() {
 		verify_user();
 
-		$tx = get_transactions(get_user_id());
+        if (isset($_REQUEST['account'])) {
+            $account = $_REQUEST['account'];
+        } else {
+            $account = get_user_email();
+        }
+
+        if (!get_user_attr(get_user_email(), 'admin') && $email != get_user_email() && get_user_attr(get_user_email(), 'proxy_user_id') != get_user_id()) {
+            $params = [ 'message' => 'Zugriff verweigert.' ];
+            return [ 'error', $params ];
+        }
+
+        $uid = get_user_attr($account, 'id');
+
+        if ($uid === false) {
+            $params = [ 'message' => 'Zugriff verweigert.' ];
+            return [ 'error', $params ];
+        }
+
 		$vp = [
-			'balance' => get_user_balance(get_user_id()),
-			'tx' => $tx,
-			'held_amount' => get_held_amount(get_user_id())
+            'uid' => $uid,
+            'account' => $account,
+            'accounts' => get_user_accounts(get_user_id()),
+			'balance' => get_user_balance($uid),
+			'tx' => get_transactions($uid),
+			'held_amount' => get_held_amount($uid),
+            'credit_limit' => get_user_attr($account, 'credit_limit')
 		];
 		return [ 'transactions', $vp ];
 	}
