@@ -44,8 +44,6 @@ while (($line = fgetcsv($fp, 0, ';')) !== false) {
 	$purpose = '';
 	for ($i = 1; $i < count($line); $i++) {
 		if (preg_match('/^purpose\\d+$/', $headers[$i])) {
-			if ($purpose != '')
-				$purpose .= ' ';
 			$purpose .= $line[$i];
 		}
 	}
