@@ -43,13 +43,11 @@ class AdjustlimitsController {
 
         $today = strtotime(date("Y-m-d", time()));
 
-        var_dump($last_adjustment);
-
         $next_adjustment = null;
         $adjusted = false;
 
-        if (bccomp(get_user_attr($email, 'balance'), MINIMUM_DEBT) <= 0) {
-            $next_adjustment = $today + 24 * 60 * 60 * (MINIMUM_DAYS - get_user_last_positive($email));
+        if (bccomp(get_user_attr($email, 'balance'), MINIMUM_DEBT) <= 0 && bccomp(get_user_attr($email, 'credit_limit'), '0') != 0) {
+            $next_adjustment = get_user_last_positive($email) + 24 * 60 * 60 * MINIMUM_DAYS;
 
             if ($last_adjustment !== null) {
                 $adjtmp = $last_adjustment + 24 * 60 * 60 * MINIMUM_DAYS;
@@ -58,20 +56,23 @@ class AdjustlimitsController {
                 }
             }
 
-            if (time() >= $next_adjustment) {
+            if ($next_adjustment !== null && time() >= $next_adjustment) {
                 $credit_limit = get_user_attr($email, 'credit_limit');
-                if (bccomp($credit_limit, LIMIT_ADJUSTMENT) >= 0) {
-                    set_user_attr($email, 'credit_limit', bcsub($credit_limit, LIMIT_ADJUSTMENT));
-                    set_user_attr($email, 'last_credit_limit_adjustment', date('Y-m-d'));
-                    $adjusted = true;
+                if (bccomp($credit_limit, LIMIT_ADJUSTMENT) <= 0) {
+                    $credit_limit = 0;
+                } else {
+                    $credit_limit = bcsub($credit_limit, LIMIT_ADJUSTMENT);
                 }
+
+                set_user_attr($email, 'credit_limit', $credit_limit);
+                set_user_attr($email, 'last_credit_limit_adjustment', date('Y-m-d'));
+                $adjusted = true;
             }
         }
 
 		$params = [
-            'credit_limit' => get_user_attr($email, 'credit_limit'),
             'adjusted' => $adjusted,
-            'planned_adjustment' => LIMIT_ADJUSTMENT,
+            'credit_limit' => get_user_attr($email, 'credit_limit'),
             'next_credit_limit_adjustment' => $next_adjustment,
 		];
 		return [ 'adjust-limits', $params ];
