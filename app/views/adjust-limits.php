@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Bank
+ * Shop
  * Copyright (C) 2015 Gunnar Beutner
  *
  * This program is free software; you can redistribute it and/or
@@ -19,26 +19,11 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-require_once('helpers/session.php');
-require_once('helpers/transaction.php');
+ob_clean();
 
-class UserinfoController {
-	public function get() {
-		if (!get_user_attr(get_user_email(), 'admin')) {
-			$params = [ 'message' => 'Zugriff verweigert.' ];
-			return [ 'error', $params ];
-		}
+header('Content-type: application/json');
+echo json_encode($params);
+ob_end_flush();
+exit(0);
 
-		$email = $_GET['email'];
-		$params = [
-			'balance' => get_user_attr($email, 'balance'),
-            'last_positive' => get_user_last_positive($email),
-            'last_credit_limit_adjustment' => get_user_attr($email, 'last_credit_limit_adjustment'),
-			'tgt_reference' => get_user_transfer_code($email),
-			'tgt_owner' => BANK_EXT_OWNER,
-			'tgt_iban' => BANK_EXT_IBAN,
-			'tgt_org' => BANK_EXT_ORG
-		];
-		return [ 'user-info', $params ];
-	}
-}
+?>
