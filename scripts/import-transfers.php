@@ -43,12 +43,12 @@ while (($line = fgetcsv($fp, 0, ';')) !== false) {
 
 	$purpose = '';
 	for ($i = 1; $i < count($line); $i++) {
-		if (preg_match('/^purpose\\d+$/', $headers[$i])) {
+		if (preg_match('/^purpose/', $headers[$i])) {
 			$purpose .= $line[$i];
 		}
 	}
 
-	$date = $transaction['date'];
+	$date = $transaction['valutadate'];
 	$user = get_email_from_transfer_code($purpose);
 
 	if ($user === false)
