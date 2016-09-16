@@ -37,6 +37,7 @@
      "atlassian/aui": "5.8.13",
      "dompdf/dompdf": "0.7.*",
      "enygma/yubikey": "~3.2",
-     "globalcitizen/php-iban": "2.5.4"
+     "globalcitizen/php-iban": "2.5.4",
+     "kore/ctx-parser": "*"
   }
 }

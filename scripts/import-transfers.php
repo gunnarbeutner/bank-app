@@ -24,31 +24,41 @@ require_once(__DIR__ . '/../config.php');
 require_once('helpers/session.php');
 require_once('helpers/db.php');
 require_once('helpers/transaction.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 if (count($argv) < 2) {
 	echo 'Syntax: ' . $argv[0] . " <csv-file>\n";
 	die();
 }
 
-$fp = fopen($argv[1], 'r');
+$parser = new CTXParser\Parser();
+$info = $parser->parse($argv[1]);
 
-$headers = fgetcsv($fp, 0, ';');
+$txes = [];
+
+foreach ($info->accountInfo as $accountInfo) {
+    if ($accountInfo->transactionList !== null) {
+        $txes = array_merge($txes, $accountInfo->transactionList[0]->transaction);
+    }
+    if ($accountInfo->notedTransactionList !== null) {
+        $txes = array_merge($txes, $accountInfo->notedTransactionList[0]->notedTransaction);
+    }
+}
 
 $transfers = array();
 
-while (($line = fgetcsv($fp, 0, ';')) !== false) {
+foreach ($txes as $tx) {
 	$transaction = array();
-	for ($i = 0; $i < count($line); $i++)
-		$transaction[$headers[$i]] = $line[$i];
 
-	$purpose = '';
-	for ($i = 1; $i < count($line); $i++) {
-		if (preg_match('/^purpose/', $headers[$i])) {
-			$purpose .= $line[$i];
-		}
-	}
+    if (is_array($tx->purpose)) {
+      $purpose = implode(' ', $tx->purpose);
+    } else {
+      $purpose = $tx->purpose;
+    }
 
-	$date = $transaction['valutadate'];
+    $dateInfo = $tx->valutaDate[0]->date[0];
+	$date = $dateInfo->year . "/" . $dateInfo->month . "/" . $dateInfo->day;
+
 	$user = get_email_from_transfer_code($purpose);
 
 	if ($user === false)
@@ -64,8 +74,10 @@ while (($line = fgetcsv($fp, 0, ';')) !== false) {
 		);
 	}
 
-	$transfers[$user][$date]['amount'] = bcadd($transfers[$user][$date]['amount'], $transaction['value_value']);
-	$transfers[$user][$date]['transactions'][] = $transaction;
+    $value = $tx->value[0]->value;
+
+	$transfers[$user][$date]['amount'] = bcadd($transfers[$user][$date]['amount'], $value);
+	$transfers[$user][$date]['transactions'][] = $tx;
 }
 
 foreach ($transfers as $email => $dates) {
@@ -96,17 +108,18 @@ QUERY;
 		$amount = 0;
 		$transactions = array();
 		foreach ($info['transactions'] as $transaction) {
-			$amount = bcadd($amount, $transaction['value_value']);
+            $value = $transaction->value[0]->value;
+			$amount = bcadd($amount, $value);
 
 			/* Ignore transactions we've already processed. */
 			if (bccomp($amount, $prev_amount) <= 0)
 				continue;
 
-			$prev_amount = bcadd($prev_amount, $transaction['value_value']);
+			$prev_amount = bcadd($prev_amount, $value);
 
 			$transactions[] = array(
-				'amount' => $transaction['value_value'],
-				'reference' => 'SEPA-Überweisung von ' . $transaction['remoteName'] . ' (IBAN: ' . $transaction['remoteAccountNumber'] . ')'
+				'amount' => $value,
+				'reference' => 'SEPA-Überweisung von ' . $transaction->remoteName . ' (IBAN: ' . $transaction->remoteAccountNumber . ')'
 			);
 		}
 
