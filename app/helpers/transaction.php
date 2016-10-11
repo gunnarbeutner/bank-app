@@ -36,7 +36,7 @@ QUERY;
 	return $bank_db->query($query)->fetch()['balance'];
 }
 
-function new_transaction($from_mail, $to_mail, $type, $amount, $reference, $use_tx = true, $ignore_limits = false) {
+function new_transaction($from_mail, $to_mail, $type, $amount, $reference, $agent_mail = null, $use_tx = true, $ignore_limits = false) {
 	global $bank_db;
 
 	if (bccomp($amount, 0) != 1)
@@ -48,6 +48,13 @@ function new_transaction($from_mail, $to_mail, $type, $amount, $reference, $use_
 	$from = get_user_attr($from_mail, 'id');
 	$to = get_user_attr($to_mail, 'id');
 
+	if ($agent_mail != null) {
+		$agent = get_user_attr($agent_mail, 'id');
+
+		if ($agent == false)
+			return [ false, 'Ungültiger Agent für Transaktion.' ];
+	}
+
 	if ($from == false || $to == false || $from == $to)
 		return [ false, 'Auftraggeber oder Empfänger ungültig.' ];
 
@@ -56,6 +63,11 @@ function new_transaction($from_mail, $to_mail, $type, $amount, $reference, $use_
 	$type_quoted = $bank_db->quote($type);
 	$amount_quoted = $bank_db->quote($amount);
 	$reference_quoted = $bank_db->quote($reference);
+
+	if ($agent_mail !== null)
+		$agent_quoted = $bank_db->quote($agent);
+	else
+		$agent_quoted = 'null';
 
 	if ($use_tx)
 		$bank_db->query("BEGIN");
@@ -95,9 +107,9 @@ QUERY;
 
 	$query = <<<QUERY
 INSERT INTO `transactions`
-(`from`, `to`, `type`, `amount`, `reference`)
+(`from`, `to`, `type`, `amount`, `reference`, `agent_id`)
 VALUES
-(${from_quoted}, ${to_quoted}, ${type_quoted}, ${amount_quoted}, ${reference_quoted})
+(${from_quoted}, ${to_quoted}, ${type_quoted}, ${amount_quoted}, ${reference_quoted}, ${agent_quoted})
 QUERY;
 	$bank_db->query($query);
 
@@ -162,10 +174,11 @@ function get_transactions($uid) {
 
 	$uid_quoted = $bank_db->quote($uid);
 	$query = <<<QUERY
-SELECT t.`id`, UNIX_TIMESTAMP(t.`timestamp`) AS timestamp, t.`type`, t.`from`, u1.`name` AS from_name, u1.`email` AS from_email, t.`to`, u2.`name` AS to_name, u2.`email` AS to_email, t.`amount`, t.`reference`
+SELECT t.`id`, UNIX_TIMESTAMP(t.`timestamp`) AS timestamp, t.`type`, t.`from`, u1.`name` AS from_name, u1.`email` AS from_email, t.`to`, u2.`name` AS to_name, u2.`email` AS to_email, t.`amount`, t.`reference`, u3.`email` AS agent_mail, u3.`name` AS agent_name
 FROM `transactions` t
 LEFT JOIN `users` u1 ON u1.`id`=t.`from`
 LEFT JOIN `users` u2 ON u2.`id`=t.`to`
+LEFT JOIN `users` u3 ON u3.`id`=t.`agent_id`
 WHERE `from` = ${uid_quoted} OR `to` = ${uid_quoted}
 ORDER BY t.`id` DESC
 QUERY;
@@ -266,10 +279,11 @@ function get_transactions_between($begin, $end) {
 	$end_quoted = $bank_db->quote($end);
 
 	$query = <<<QUERY
-SELECT t.`id`, UNIX_TIMESTAMP(t.`timestamp`) AS timestamp, t.`type`, t.`from`, u1.`email` AS from_email, t.`to`, u2.`email` AS to_email, t.`amount`, t.`reference`
+SELECT t.`id`, UNIX_TIMESTAMP(t.`timestamp`) AS timestamp, t.`type`, t.`from`, u1.`email` AS from_email, t.`to`, u2.`email` AS to_email, t.`amount`, t.`reference`, u3.`email` AS agent_email
 FROM `transactions` t
 LEFT JOIN `users` u1 ON u1.`id`=t.`from`
 LEFT JOIN `users` u2 ON u2.`id`=t.`to`
+LEFT JOIN `users` u3 ON u3.`id`=t.`agent_id`
 WHERE UNIX_TIMESTAMP(t.`timestamp`) > ${begin_quoted} AND UNIX_TIMESTAMP(t.`timestamp`) < ${end_quoted}
 QUERY;
 	return $bank_db->query($query)->fetchAll();

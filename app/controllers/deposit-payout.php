@@ -84,14 +84,14 @@ class DepositpayoutController {
 
 		$bank_db->query("BEGIN");
 
-		list($status, $result) = new_transaction($pop_from, $pop_to, 'Direct Debit', $amount, $pop_reference, false);
+		list($status, $result) = new_transaction($pop_from, $pop_to, 'Direct Debit', $amount, $pop_reference, get_user_email(), false);
 
 		if (!$status) {
 			$params = [ 'message' => "Bank -> POP - " . $result ];
 			return [ 'error', $params ];
 		}
 
-		list($status, $result) = new_transaction($from, $to, 'Direct Debit', $amount, $reference, false);
+		list($status, $result) = new_transaction($from, $to, 'Direct Debit', $amount, $reference, get_user_email(), false);
 
 		if (!$status) {
 			$params = [ 'message' => "Bank -> Kunde - " . $result ];

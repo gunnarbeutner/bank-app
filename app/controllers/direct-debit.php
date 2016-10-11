@@ -66,7 +66,7 @@ class DirectdebitController {
 			return [ 'error', $params ];
 		}
 
-		list($status, $result) = new_transaction($from, get_user_email(), 'Direct Debit', $amount, $reference, true, $ignore_limits);
+		list($status, $result) = new_transaction($from, get_user_email(), 'Direct Debit', $amount, $reference, null, true, $ignore_limits);
 
 		if (!$status) {
 			$params = [ 'message' => $result ];

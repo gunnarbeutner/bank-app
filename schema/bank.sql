@@ -60,6 +60,7 @@ CREATE TABLE `transactions` (
   `to` int(11) NOT NULL,
   `amount` decimal(12,5) NOT NULL,
   `reference` varchar(255) NOT NULL,
+  `agent_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_user_id_idx` (`from`),
   KEY `fk_to_user_id_idx` (`to`),
