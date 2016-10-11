@@ -74,6 +74,7 @@ HTML;
     <th>Name</th>
     <th>Kontostand (&euro;)</th>
     <th>Im Minus seit</th>
+    <th>Mehr als 10&euro; Schulden seit</th>
  </tr>
 <?php
 		foreach ($params['user_accounts'] as $user) {
@@ -85,6 +86,7 @@ HTML;
     <td title="%s">%s</td>
     <td>%s</td>
     <td>%s</td>
+    <td>%s</td>
   </tr>
 
 HTML;
@@ -92,13 +94,17 @@ HTML;
             if (bccomp($user['balance'], '0') == -1) {
                 $days = round((time() - $user['last_positive']) / 86400);
                 $last_positive_info = $days . ' Tag' . ($days != 1 ? 'e' : '');
+
+                $days_threshold = round((time() - $user['last_above_threshold']) / 86400);
+                $last_above_threshold_info = $days_threshold . ' Tag' . ($days_threshold != 1 ? 'e' : '');
             } else {
                 $last_positive_info = '';
+		$last_above_threshold_info = '';
             }
 
 			printf($html,
 			    htmlentities($user['email']), htmlentities($user['name']),
-                format_number($user['balance']), $last_positive_info);
+                format_number($user['balance']), $last_positive_info, $last_above_threshold_info);
 		}
     }
 ?>

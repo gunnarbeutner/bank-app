@@ -32,7 +32,8 @@ class UserinfoController {
 		$email = $_GET['email'];
 		$params = [
 			'balance' => get_user_attr($email, 'balance'),
-            'last_positive' => get_user_last_positive($email),
+            'last_positive' => get_user_last_balance_above($email),
+            'last_above_threshold' => get_user_last_balance_above($email, -10),
             'last_credit_limit_adjustment' => get_user_attr($email, 'last_credit_limit_adjustment'),
 			'tgt_reference' => get_user_transfer_code($email),
 			'tgt_owner' => BANK_EXT_OWNER,

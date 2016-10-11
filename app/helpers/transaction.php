@@ -298,10 +298,10 @@ function _cmp_transaction($a, $b) {
         return 0;
 }
 
-function get_user_last_positive($email) {
+function get_user_last_balance_above($email, $minBalance = 0) {
     $balance = get_user_attr($email, 'balance');
 
-    if (bccomp($balance, '0') != -1) {
+    if (bccomp($balance, $minBalance) != -1) {
         return time();
     }
 
@@ -319,7 +319,7 @@ function get_user_last_positive($email) {
 
         $balance = bcadd($balance, $amount);
 
-        if (bccomp($balance, '0') != -1) {
+        if (bccomp($balance, $minBalance) != -1) {
             return $transaction['timestamp'];
         }
     }

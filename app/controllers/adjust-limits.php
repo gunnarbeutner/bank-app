@@ -47,7 +47,7 @@ class AdjustlimitsController {
         $adjusted = false;
 
         if (bccomp(get_user_attr($email, 'balance'), MINIMUM_DEBT) <= 0 && bccomp(get_user_attr($email, 'credit_limit'), '0') != 0) {
-            $next_adjustment = get_user_last_positive($email) + 24 * 60 * 60 * MINIMUM_DAYS;
+            $next_adjustment = get_user_last_balance_above($email, MINIMUM_DEBT) + 24 * 60 * 60 * MINIMUM_DAYS;
 
             if ($last_adjustment !== null) {
                 $adjtmp = $last_adjustment + 24 * 60 * 60 * MINIMUM_DAYS;
