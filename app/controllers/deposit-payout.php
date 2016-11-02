@@ -67,19 +67,19 @@ class DepositpayoutController {
 		if ($type == 'deposit') {
 			$from = BANK_MGMT_ACCOUNT;
 			$to = $customer;
-			$reference = 'Bareinzahlung';
+			$reference = 'Einzahlung';
 
 			$pop_from = $pop;
 			$pop_to = BANK_MGMT_ACCOUNT;
-			$pop_reference = 'Barauszahlung';
+			$pop_reference = 'Auszahlung';
 		} else {
 			$from = $customer;
 			$to = BANK_MGMT_ACCOUNT;
-			$reference = 'Barauszahlung';
+			$reference = 'Auszahlung';
 
 			$pop_from = $to;
 			$pop_to = $pop;
-			$pop_reference = 'Bareinzahlung';
+			$pop_reference = 'Einzahlung';
 		}
 
 		$bank_db->query("BEGIN");
