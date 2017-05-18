@@ -115,7 +115,7 @@ HTML;
 ?>
 <h2>Transaktionen</h2>
 
-<p>Heutiges Transaktionsvolumen: <?php echo format_number($params['transaction_volume']); ?> &euro;
+<p>Transaktionsvolumen der letzten 7 Tage: <?php echo format_number($params['transaction_volume']); ?> &euro;
 
 <?php
     	if (count($params['transactions']) > 0) {

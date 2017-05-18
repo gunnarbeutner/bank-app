@@ -62,7 +62,7 @@ class FinancestatementController {
         usort($system_accounts, 'comp_user');
         usort($user_accounts, 'comp_user');
 
-		$transactions = get_transactions_between(mktime('0'), time());
+		$transactions = get_transactions_between(mktime('0') - 6 * 24 * 60 * 60, time());
 
 		$transaction_volume = '0';
 
