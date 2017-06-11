@@ -148,7 +148,7 @@ HTML;
 HTML;
 
     			printf($html,
-	    		    htmlentities($transaction['id']), date('H:i:s', $transaction['timestamp']), htmlentities($transaction['type']),
+	    		    htmlentities($transaction['id']), date('Y-m-d H:i:s', $transaction['timestamp']), htmlentities($transaction['type']),
 		    	    htmlentities($transaction['from_email']), htmlentities($transaction['to_email']),
 			    format_number($transaction['amount']), htmlentities($transaction['reference']),
 			    htmlentities($transaction['agent_email']));
