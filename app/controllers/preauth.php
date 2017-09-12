@@ -33,6 +33,7 @@ class PreauthController {
 		$email = $_POST['email'];
 		$tag = $_POST['tag'];
 		$amount = $_POST['amount'];
+        $override_credit_limit = $_POST['override_credit_limit'];
 
 		$id = get_user_attr($email, 'id');
 
@@ -44,6 +45,10 @@ class PreauthController {
 		$balance = get_user_attr($email, 'balance');
 		$balance = bcsub($balance, $amount);
 		$credit_limit = get_user_attr($email, 'credit_limit');
+
+        if ($override_credit_limit != '' && bccomp($override_credit_limit, $credit_limit) == -1) {
+            $credit_limit = $override_credit_limit;
+        }
 
 		if (bccomp($balance, bcmul($credit_limit, -1)) == -1) {
 			$params = [ 'message' => 'Authorization fehlgeschlagen.' ];
