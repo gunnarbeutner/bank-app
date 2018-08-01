@@ -26,9 +26,11 @@ require_once('helpers/session.php');
 
 <h1>Ein- und Auszahlung</h1>
 
+<?php if (BANK_EXT_IBAN !== null) { ?>
 <p>
   <a href="/app/deposit-payout?uv=1">Seite ohne Adminberechtigungen ansehen</a>
 </p>
+<?php } ?>
 
 <form method="post" action="/app/deposit-payout" class="aui">
   <div class="field-group">

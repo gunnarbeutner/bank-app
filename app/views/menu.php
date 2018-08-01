@@ -56,12 +56,14 @@ $gravatar_url = "https://www.gravatar.com/avatar/" . md5(strtolower($email)) . "
             </a>
           </li>
         <?php } ?>
+        <?php if (get_user_attr($email, 'admin') || BANK_EXT_IBAN !== null) { ?>
           <li>
             <a href="/app/deposit-payout">
               <i class="fa fa-money menu-icon"></i>
               <span class="menu-text">Ein- und Auszahlung</span>
             </a>
           </li>
+        <?php } ?>
           <li>
             <a href="/app/finance-statement">
               <i class="fa fa-check-square-o menu-icon"></i>
