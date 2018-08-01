@@ -1,0 +1,4 @@
+#!/bin/sh
+cd ~/aqb
+aqbanking-cli -P pin request --transactions > ~/transactions.ctx
+sudo -u www-data php /var/www/bank/scripts/import-transfers.php ~/transactions.ctx
